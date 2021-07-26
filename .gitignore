@@ -52,3 +52,9 @@ docs/_build/**
 *.ipr
 *.iws
 .idea/
+
+
+# skip test code and all resources
+viewer.py
+templates/
+static
