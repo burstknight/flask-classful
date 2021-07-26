@@ -86,6 +86,9 @@ class FlaskView(object):
         UUID: 'uuid',
     }
 
+    # This class variable is fix the bug that class method make_proxy_method() 
+    # repeated to call consturctor of FlaskView.
+    oInstance = None    
 
     @classmethod
     def register(cls, app, route_base=None, subdomain=None, route_prefix=None,
@@ -254,10 +257,14 @@ class FlaskView(object):
         :param name: the name of the method to create a proxy for
         """
 
-        if init_argument is None:
-            i = cls()
+        if cls.getInstance() is None:
+            if init_argument is None:
+                i = cls()
+            else:
+                i = cls(init_argument)
+            cls.oInstance = i
         else:
-            i = cls(init_argument)
+            i = cls.oInstance
         view = getattr(i, name)
 
         # Since the view is a bound instance method,
@@ -430,6 +437,13 @@ class FlaskView(object):
         :param method_name: the method name to use when building a route name
         """
         return cls.__name__ + ":{0!s}".format(method_name)
+
+    @classmethod
+    def getInstance(cls):
+        """
+        Return the instance of FlaskView.
+        """
+        return cls.oInstance
 
 
 def _dashify_uppercase(name):
