@@ -261,7 +261,7 @@ class FlaskView(object):
             if init_argument is None:
                 i = cls()
             else:
-                i = cls(init_argument)
+                i = cls(*init_argument)
             cls.oInstance = i
         else:
             i = cls.oInstance
